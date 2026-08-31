@@ -632,6 +632,10 @@ a{ color:inherit; }
   .nav__links{ gap:clamp(14px, 3.2vw, 30px); }
   .nav__social{ display:none; }
 
+  /* the whole drawing is ~3.5x smaller here but the pen is not, so ease
+     it off or the arrowhead merges with the line it sits on */
+  .swash__line, .swash__head{ stroke-width:2.1; }
+
   /* A tall viewport would crop both children out of the frame, and they
      are the whole point. So below this width the photograph keeps its own
      proportions and sits at the foot of the stage, message above it. */
