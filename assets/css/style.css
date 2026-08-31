@@ -1,0 +1,660 @@
+/* ============================================================
+   Navamika Arpan Welfare Foundation
+   Section 01 - Hero  (+ Section 02 cards, Section 03 line)
+   ============================================================ */
+
+:root{
+  --cream:        #F1E8DF;
+  --cream-lift:   #F7EFE6;
+  --cream-warm:   #F3E9DE;
+  --forest:       #0C3122;
+  --forest-deep:  #062A1A;
+  --terracotta:   #B4461D;
+  --terracotta-2: #C25A2A;
+  --mustard:      #D69B36;
+  --ink:          #1A1815;
+  --ink-soft:     #4A443C;
+
+  --serif: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans:  "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --ease-page: cubic-bezier(.16,.84,.28,1);   /* the printed-page reveal */
+  --ease-soft: cubic-bezier(.2,.7,.2,1);
+
+  --gutter: clamp(18px, 3.3vw, 56px);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:400;
+  /* clip, not hidden: `hidden` makes <body> a scroll container and can
+     break the sticky hero. `clip` does not. */
+  overflow-x:hidden;
+  overflow-x:clip;
+}
+
+img{ max-width:100%; display:block; }
+ul{ list-style:none; margin:0; padding:0; }
+a{ color:inherit; }
+
+.skip-link{
+  position:absolute; left:-9999px; top:0; z-index:99;
+  background:var(--forest); color:var(--cream);
+  padding:10px 16px; font-size:13px; text-decoration:none;
+}
+.skip-link:focus{ left:12px; top:12px; }
+
+:focus-visible{ outline:2px solid var(--terracotta); outline-offset:4px; border-radius:2px; }
+
+
+/* ============================================================
+   SECTION 01 - HERO
+   ============================================================ */
+
+/* the runway is what lets the hero linger before the page moves on */
+.hero-runway{ position:relative; height:152vh; }
+
+.hero{
+  position:sticky; top:0;
+  height:100vh; min-height:600px;
+  display:flex; flex-direction:column;
+  background:var(--cream);
+  overflow:hidden;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead{
+  flex:0 0 auto;
+  display:flex; flex-direction:column; align-items:center;
+  padding-top:clamp(12px, 2vh, 26px);
+  opacity:0; transform:translateY(-10px);
+}
+.masthead.is-in{
+  opacity:1; transform:none;
+  transition:opacity 900ms ease, transform 1100ms var(--ease-page);
+}
+
+.brand{ display:block; text-align:center; text-decoration:none; }
+.brand__mark{
+  width:clamp(196px, 22.5vw, 316px);
+  height:auto; margin:0 auto;
+  mix-blend-mode:multiply;
+}
+.brand__note{
+  display:block;
+  font-size:clamp(9.5px, .84vw, 12.5px);
+  font-weight:400; letter-spacing:.005em;
+  color:var(--ink);
+  margin-top:clamp(2px, .5vh, 6px);
+}
+
+.nav{
+  position:relative;
+  width:calc(100% - var(--gutter) * 2);
+  margin:clamp(9px, 1.6vh, 20px) var(--gutter) 0;
+  height:clamp(44px, 4.1vw, 62px);
+  background:var(--forest-deep);
+  display:flex; align-items:center; justify-content:center;
+}
+.nav__links{
+  display:flex; align-items:center;
+  gap:clamp(24px, 4.6vw, 78px);
+}
+.nav__links a{
+  display:block;
+  font-size:clamp(12px, 1.12vw, 16.5px);
+  font-weight:400; letter-spacing:.012em;
+  color:#F0E7DC; text-decoration:none;
+  padding:6px 0;
+  position:relative;
+  transition:color 320ms ease;
+}
+.nav__links a::after{
+  content:""; position:absolute; left:0; right:0; bottom:1px;
+  height:1px; background:var(--mustard);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform 420ms var(--ease-soft);
+}
+.nav__links a:hover{ color:#FFF6EA; }
+.nav__links a:hover::after{ transform:scaleX(1); }
+
+.nav__social{
+  position:absolute; right:clamp(14px, 2.2vw, 34px);
+  display:flex; align-items:center; gap:clamp(12px, 1.5vw, 22px);
+}
+.nav__social a{
+  display:block; color:#F0E7DC;
+  transition:color 320ms ease, transform 320ms var(--ease-soft);
+}
+.nav__social a:hover{ color:var(--mustard); transform:translateY(-2px); }
+
+/* ---------- the stage ---------- */
+
+.stage{ position:relative; flex:1 1 auto; min-height:0; }
+
+.stage__frame{
+  position:absolute; inset:0;
+  overflow:hidden;
+  border-radius:0 0 50% 50% / 0 0 3.4vw 3.4vw;
+  filter:drop-shadow(0 12px 20px rgba(74,48,30,.09));
+}
+
+.stage__media{
+  position:absolute; inset:0;
+  will-change:transform;
+}
+
+.stage__photo{
+  width:100%; height:100%;
+  object-fit:cover; object-position:center center;
+  opacity:0;
+}
+.is-ready .stage__photo{ opacity:1; transition:opacity 1100ms ease; }
+
+/* the cream wash that lets the message live inside the photograph */
+.stage__wash{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    /* haze that lets the discovery cue stay legible over the ground */
+    radial-gradient(30% 22% at 50% 88%,
+      rgba(243,234,224,.66) 0%,
+      rgba(243,234,224,.34) 46%,
+      rgba(243,234,224,0)   76%),
+    /* the sky the message lives in */
+    radial-gradient(58% 52% at 50% 28%,
+      rgba(243,234,224,.93) 0%,
+      rgba(243,234,224,.80) 38%,
+      rgba(243,234,224,.34) 64%,
+      rgba(243,234,224,0)   84%),
+    linear-gradient(to bottom, rgba(241,232,223,.58) 0%, rgba(241,232,223,0) 24%),
+    linear-gradient(to bottom, rgba(241,232,223,0) 80%, rgba(241,232,223,.22) 100%);
+}
+
+/* ---------- the wire ---------- */
+
+.wirelayer{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  overflow:visible;
+}
+.wire__line{
+  fill:none; stroke:rgba(72,46,30,.44);
+  stroke-width:2.2; stroke-linecap:round;
+}
+.wire__halo{
+  fill:none; stroke:url(#pulseGrad);
+  stroke-width:13; stroke-linecap:round; opacity:0;
+}
+.wire__pulse{
+  fill:none; stroke:url(#pulseGrad);
+  stroke-width:4.2; stroke-linecap:round; opacity:0;
+}
+.ring{
+  fill:none; stroke:#FBE3BC; stroke-width:2.6; opacity:0;
+  transform-box:fill-box; transform-origin:center;
+}
+
+.swash__line, .swash__head{
+  fill:none; stroke:var(--terracotta-2);
+  stroke-width:2.9; stroke-linecap:round; stroke-linejoin:round;
+  opacity:.92;
+}
+
+/* ---------- the message ---------- */
+
+.stage__copy{
+  position:absolute; inset:0; z-index:3;
+  display:flex; flex-direction:column; align-items:center;
+  padding:clamp(34px, 14.6vh, 134px) 24px clamp(16px, 3.6vh, 42px);
+  text-align:center;
+  pointer-events:none;
+  will-change:transform, opacity;
+}
+.stage__copy a{ pointer-events:auto; }
+
+.statement{
+  margin:0;
+  font-family:var(--serif);
+  font-weight:500;
+  font-size:clamp(27px, 4.0vw, 56px);
+  line-height:1.2;
+  letter-spacing:-.004em;
+}
+.line{ display:block; overflow:hidden; padding:.02em 0; }
+.line--green{ color:var(--forest); }
+.line--terra{ color:var(--terracotta); }
+.line__i{
+  display:block;
+  transform:translateY(106%);
+  opacity:0;
+  filter:blur(4px);
+  will-change:transform, opacity, filter;
+}
+.line.is-revealed .line__i{
+  transform:none; opacity:1; filter:blur(0);
+  transition:
+    transform 1050ms var(--ease-page),
+    opacity    720ms ease 60ms,
+    filter     820ms ease 60ms;
+}
+
+.rule{
+  display:block;
+  width:clamp(32px, 3.4vw, 50px);
+  height:1.6px;
+  background:var(--terracotta);
+  margin-top:clamp(10px, 1.9vh, 24px);
+  transform:scaleX(0); opacity:0;
+}
+.rule.is-revealed{
+  transform:none; opacity:1;
+  transition:transform 900ms var(--ease-soft), opacity 420ms ease;
+}
+
+.whisper{
+  margin:clamp(14px, 2.6vh, 32px) 0 0;
+  font-size:clamp(11.5px, 1.15vw, 16px);
+  font-weight:400;
+  color:var(--ink);
+  line-height:1;
+}
+.w{ display:block; overflow:hidden; padding:.62em 0; }
+.w__i{ display:block; transform:translateY(118%); opacity:0; }
+.w.is-revealed .w__i{
+  transform:none; opacity:1;
+  transition:transform 820ms var(--ease-page), opacity 600ms ease;
+}
+
+/* ---------- find how ---------- */
+
+.cue{
+  margin-top:auto;
+  position:relative;
+  display:flex; flex-direction:column; align-items:center;
+}
+.cue__doodle{
+  position:absolute; bottom:100%; left:50%;
+  transform:translateX(-38%);
+  width:clamp(146px, 14.4vw, 208px);
+  margin-bottom:clamp(-2px, .4vh, 6px);
+  pointer-events:none;
+}
+.dd{
+  stroke:var(--terracotta-2);
+  stroke-width:2.1; stroke-linecap:round; stroke-linejoin:round;
+  fill:none; opacity:1;
+}
+
+.findhow{
+  display:inline-flex; flex-direction:column; align-items:center;
+  gap:clamp(6px, .9vh, 11px);
+  text-decoration:none;
+  opacity:0; transform:translateY(12px);
+}
+.findhow.is-revealed{
+  opacity:1; transform:none;
+  transition:opacity 800ms ease, transform 950ms var(--ease-page);
+}
+.findhow__ring{
+  width:clamp(34px, 3.1vw, 44px); height:clamp(34px, 3.1vw, 44px);
+  border-radius:50%;
+  border:1.4px solid var(--forest);
+  color:var(--forest);
+  display:grid; place-items:center;
+  transition:background 460ms var(--ease-soft), color 460ms var(--ease-soft),
+             border-color 460ms var(--ease-soft), transform 520ms var(--ease-soft);
+}
+.findhow__ring svg{ animation:bob 3s ease-in-out infinite; }
+.findhow__label{
+  font-family:var(--serif);
+  font-size:clamp(13px, 1.25vw, 18px);
+  color:var(--forest);
+  letter-spacing:.008em;
+  transition:color 380ms ease;
+}
+.findhow:hover .findhow__ring,
+.findhow:focus-visible .findhow__ring{
+  background:var(--forest); color:var(--cream);
+  border-color:var(--forest); transform:translateY(3px);
+}
+.findhow:hover .findhow__label,
+.findhow:focus-visible .findhow__label{ color:var(--terracotta); }
+
+@keyframes bob{
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(2.5px); }
+}
+
+
+/* ============================================================
+   SECTION 02 - THE CARDS
+   ============================================================ */
+
+.work{
+  position:relative;
+  background:var(--cream);
+  padding:clamp(48px, 8vh, 104px) var(--gutter) clamp(40px, 6vh, 80px);
+}
+.wrap{ max-width:1180px; margin:0 auto; text-align:center; }
+
+.work__title{
+  margin:0;
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(26px, 3.5vw, 48px);
+  line-height:1.24;
+}
+.work__title span{ display:block; color:var(--forest); }
+.work__title em{ display:block; font-style:normal; color:var(--terracotta); }
+
+.rule--static{
+  margin-left:auto; margin-right:auto;
+  transform:none; opacity:1;
+}
+
+.work__sub{
+  margin:clamp(12px, 2vh, 22px) 0 clamp(30px, 5vh, 56px);
+  font-size:clamp(11px, .98vw, 14px);
+  color:var(--ink);
+}
+
+/* ---------- the deck ----------
+   Every measurement below was taken off the reference card and is
+   written in cqw - 1% of the card's own width - so the whole
+   composition scales as a single piece at any column width.
+   ------------------------------------------------------------- */
+
+.deck{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:clamp(10px, 1.5vw, 22px);
+  align-items:stretch;
+}
+
+.card{
+  container-type:inline-size;
+  position:relative;
+  background:
+    linear-gradient(116deg, rgba(255,253,249,.6) 0%, rgba(255,253,249,0) 46%),
+    var(--cream-lift);
+  border-radius:3.4cqw;
+  box-shadow:
+    0 1px 2px rgba(84,56,34,.05),
+    0 14px 30px -18px rgba(84,56,34,.34);
+  opacity:0; transform:translateY(26px);
+  transition:opacity 900ms ease, transform 1000ms var(--ease-page),
+             box-shadow 480ms var(--ease-soft);
+}
+.deck.is-in .card{ opacity:1; transform:none; }
+.deck.is-in .card:nth-child(1){ transition-delay:0ms; }
+.deck.is-in .card:nth-child(2){ transition-delay:110ms; }
+.deck.is-in .card:nth-child(3){ transition-delay:220ms; }
+.deck.is-in .card:nth-child(4){ transition-delay:330ms; }
+
+.card:hover{
+  box-shadow:
+    0 2px 4px rgba(84,56,34,.06),
+    0 26px 46px -20px rgba(84,56,34,.42);
+}
+
+/* the copy is centred in the ticket, not the card: everything sits
+   in the space left of the perforation */
+.card__body{
+  display:flex; flex-direction:column; align-items:center;
+  padding:21.8cqw 16.5cqw 15cqw 5cqw;
+  min-height:182cqw; height:100%;
+}
+
+.card__icon{
+  height:25cqw;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--tone-ink);
+}
+.card__icon svg{ height:auto; }
+.card__icon--heart svg{ width:25cqw; }
+.card__icon--eye   svg{ width:31cqw; }
+.card__icon--book  svg{ width:28cqw; }
+.card__icon--pot   svg{ width:26cqw; }
+
+.card__name{
+  margin:15.2cqw 0 0;
+  font-family:var(--serif); font-weight:700;
+  font-size:9.2cqw; line-height:1;
+  letter-spacing:.015em; text-transform:uppercase;
+  color:var(--tone-ink);
+}
+.card__kicker{
+  margin:5.6cqw 0 0;
+  font-family:var(--serif); font-weight:400;
+  font-size:7.3cqw; line-height:1;
+  color:var(--tone-ink);
+}
+.card__rule{
+  display:block;
+  width:14.8cqw; height:.62cqw;
+  background:var(--tone-ink); opacity:.5;
+  margin:11.8cqw 0 0;
+}
+.card__text{
+  margin:13cqw 0 0;
+  font-size:5.15cqw; line-height:2.05;
+  color:var(--ink);
+}
+.card__flourish{
+  width:32cqw; height:auto;
+  color:var(--terracotta-2);
+  margin-top:auto; padding-top:12cqw;
+  transition:transform 560ms var(--ease-soft);
+}
+.card:hover .card__flourish{ transform:translateX(5%); }
+
+/* ---------- the ticket: perforation, notches, tab ---------- */
+
+/* punched holes, on the 88.5% line */
+.card__perf{
+  position:absolute;
+  top:9cqw; bottom:9cqw;
+  left:88.5%; width:2.4cqw; margin-left:-1.2cqw;
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(114,90,60,.62) 0 33%, transparent 40%),
+    radial-gradient(circle at 50% 58%, rgba(255,253,248,.95) 0 34%, transparent 42%);
+  background-size:2.4cqw 5.63cqw;
+  background-repeat:repeat-y;
+}
+
+/* a square rotated 45deg and hung half off the edge reads as a cut notch */
+.card__notch{
+  position:absolute; left:88.5%;
+  background:var(--cream);
+  transform:translate(-50%,-50%) rotate(45deg);
+}
+/* ...and it is clipped to the half that actually falls inside the card,
+   so the other half never paints over the card's own shadow */
+.card__notch--top{
+  top:0; width:3.75cqw; height:3.75cqw;
+  border-bottom-right-radius:1.1cqw;
+  clip-path:polygon(100% 0, 100% 100%, 0 100%);
+}
+.card__notch--bot{
+  top:100%; width:5.8cqw; height:5.8cqw;
+  border-top-left-radius:1.3cqw;
+  clip-path:polygon(0 0, 100% 0, 0 100%);
+}
+
+/* the hands in the Spark & Story mark are drawn over the pot */
+.card__icon .hnd{ fill:var(--cream-lift); }
+
+.card__tab{
+  position:absolute;
+  left:86.3%; width:13.2%;
+  top:33%; height:36.8%;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 34%),
+    var(--tone);
+  border-radius:1.4cqw 3.6cqw 3.6cqw 1.4cqw;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 12px -6px rgba(48,30,16,.55);
+  transform:translateX(-10%) scaleX(.35);
+  transform-origin:left center;
+  opacity:0;
+  transition:transform 780ms var(--ease-page), opacity 520ms ease,
+             width 460ms var(--ease-soft);
+}
+.deck.is-in .card__tab{ transform:none; opacity:1; }
+.deck.is-in .card:nth-child(1) .card__tab{ transition-delay:340ms; }
+.deck.is-in .card:nth-child(2) .card__tab{ transition-delay:450ms; }
+.deck.is-in .card:nth-child(3) .card__tab{ transition-delay:560ms; }
+.deck.is-in .card:nth-child(4) .card__tab{ transition-delay:670ms; }
+
+.card__tab span{
+  writing-mode:vertical-rl;
+  font-size:5cqw; font-weight:500;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:#F6EEE2; white-space:nowrap;
+}
+.card:hover .card__tab{ width:16.4%; }
+
+
+/* ---------- the ribbon deck note ---------- */
+
+.ribbons{
+  display:flex; align-items:center;
+  gap:clamp(10px, 1.6vw, 26px);
+  margin-top:clamp(26px, 4.4vh, 52px);
+  padding-left:clamp(0px, 4vw, 70px);
+}
+.ribbons__stack{
+  display:flex; flex-direction:column; gap:3px;
+  width:clamp(170px, 24vw, 320px);
+  padding:7px 9px;
+  background:var(--cream-lift);
+  border-radius:4px;
+  box-shadow:0 8px 18px -12px rgba(80,52,32,.5);
+}
+.ribbons__stack i{ display:block; height:3px; border-radius:2px; }
+.ribbons__stack i:nth-child(1){ background:#E8DDD0; }
+.ribbons__stack i:nth-child(2){ background:var(--terracotta); }
+.ribbons__stack i:nth-child(3){ background:var(--forest-deep); }
+.ribbons__stack i:nth-child(4){ background:var(--mustard); }
+.ribbons__stack i:nth-child(5){ background:#E8DDD0; }
+
+.ribbons__arrow{
+  width:clamp(56px, 6vw, 90px); height:auto;
+  color:var(--terracotta-2); flex:0 0 auto;
+}
+.ribbons__note{
+  margin:0; text-align:left;
+  font-size:clamp(11px, .98vw, 14px);
+  line-height:1.85; color:var(--ink);
+}
+
+
+/* ============================================================
+   SECTION 03 - THE LINE
+   ============================================================ */
+
+.zidd{
+  background:var(--cream);
+  padding:clamp(40px, 6vh, 78px) var(--gutter) clamp(52px, 9vh, 120px);
+  text-align:center;
+}
+.zidd__line{
+  margin:0 0 clamp(18px, 3vh, 34px);
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(26px, 3.6vw, 50px);
+  line-height:1.22;
+}
+.zidd__line span{ display:block; color:var(--forest); }
+.zidd__line em{ display:block; font-style:normal; color:var(--terracotta); }
+.zidd__cue{
+  width:clamp(32px, 2.9vw, 42px); height:clamp(32px, 2.9vw, 42px);
+  border:1.4px solid var(--forest); border-radius:50%;
+  color:var(--forest);
+  display:inline-grid; place-items:center;
+}
+
+
+/* ---------- scroll reveals ---------- */
+
+.reveal{ opacity:0; transform:translateY(20px); }
+.reveal.is-in{
+  opacity:1; transform:none;
+  transition:opacity 950ms ease, transform 1050ms var(--ease-page);
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 900px){
+  .hero-runway{ height:130vh; }
+  .nav__links{ gap:clamp(14px, 3.2vw, 30px); }
+  .nav__social{ display:none; }
+  .swash{ display:none; }
+
+  /* A tall viewport would crop both children out of the frame, and they
+     are the whole point. So below this width the photograph keeps its own
+     proportions and sits at the foot of the stage, message above it. */
+  .stage__media{
+    top:auto; bottom:0;
+    height:66.67vw;              /* the photograph's own 1536:1024 */
+  }
+  .stage__copy{ padding-top:clamp(26px, 7vh, 66px); }
+  .whisper{ margin-top:clamp(12px, 2vh, 22px); }
+
+  .deck{ grid-template-columns:repeat(2, 1fr); gap:18px; }
+  .ribbons{ padding-left:0; justify-content:center; }
+}
+
+@media (max-width: 620px){
+  .hero-runway{ height:112vh; }
+  .hero{ min-height:560px; }
+  .stage__frame{ border-radius:0 0 50% 50% / 0 0 26px 26px; }
+  .nav{ height:44px; }
+  .nav__links{ gap:14px; }
+  .nav__links a{ font-size:11px; }
+  .statement{ font-size:26px; }
+  .cue__doodle{ width:132px; transform:translateX(-40%); }
+  .stage__wash{
+    background:
+      radial-gradient(48% 32% at 50% 84%,
+        rgba(243,234,224,.80) 0%, rgba(243,234,224,.44) 48%, rgba(243,234,224,0) 80%),
+      radial-gradient(82% 46% at 50% 22%,
+        rgba(243,234,224,.90) 0%, rgba(243,234,224,.62) 44%, rgba(243,234,224,0) 80%),
+      linear-gradient(to bottom, rgba(241,232,223,.6) 0%, rgba(241,232,223,0) 26%);
+  }
+  .deck{ grid-template-columns:1fr; gap:20px; }
+  .card__body{ padding-inline:20px 56px; }
+  .ribbons{ flex-direction:column; text-align:center; }
+  .ribbons__note{ text-align:center; }
+}
+
+
+/* ============================================================
+   REDUCED MOTION - the story still reads, it just does not move
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .hero-runway{ height:100vh; }
+  .stage__photo{ opacity:1; }
+  .masthead{ opacity:1; transform:none; }
+  .line__i, .w__i{ transform:none; opacity:1; filter:none; }
+  .rule{ transform:none; opacity:1; }
+  .findhow{ opacity:1; transform:none; }
+  .findhow__ring svg{ animation:none; }
+  .card, .reveal{ opacity:1; transform:none; }
+  .card__tab{ opacity:1; transform:none; }
+  .swash__line, .swash__head{ stroke-dasharray:none !important; stroke-dashoffset:0 !important; }
+  .dd{ stroke-dasharray:none !important; stroke-dashoffset:0 !important; }
+  *{ transition-duration:.01ms !important; animation-duration:.01ms !important; }
+}
