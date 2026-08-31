@@ -31,14 +31,16 @@
      shifted - never scaled, or the hand-drawn stroke would warp.
      ---------------------------------------------------------- */
 
-  var swash     = $('#swash');
-  var swashLine = $('#swashLine');
+  var swashWrap  = $('#swashWrap');
+  var swashShift = $('#swashShift');
+  var swashLine  = $('#swashLine');
+  var swashTail  = $('#swashTail');
   var ruleEl    = $('#rule');
   var whisperEl = $('.whisper');
   var swashBox  = null;
 
   function placeSwash() {
-    if (!swash || !swashLine || !ruleEl || !whisperEl) return;
+    if (!swashShift || !swashLine || !ruleEl || !whisperEl) return;
     var m = svg.getScreenCTM();
     if (!m || !m.d) return;
 
@@ -59,7 +61,13 @@
     var nowY  = m.f + low * m.d;
     var shift = clamp((target - nowY) / m.d, -140, 140);
 
-    swash.setAttribute('transform', 'translate(0 ' + shift.toFixed(1) + ')');
+    swashShift.setAttribute('transform', 'translate(0 ' + shift.toFixed(1) + ')');
+
+    // the tail leaves the shifted line and comes back down onto the wire
+    var sy = 396 + shift;
+    swashTail.setAttribute('d',
+      'M1128 ' + sy.toFixed(1) +
+      ' C1162 ' + (sy - 7).toFixed(1) + ' 1164 436 1206 424');
   }
 
   /* ----------------------------------------------------------
@@ -111,7 +119,7 @@
     requestAnimationFrame(function () { node.style.strokeDashoffset = 0; });
   }
 
-  var inkMarks = $$('#swashLine, #swashHead, .dd');
+  var inkMarks = $$('#swashLine, #swashTail, #swashHead, .dd');
   inkMarks.forEach(prepDraw);
 
   function finish() {
@@ -145,7 +153,11 @@
     at(1600, function () { lines[1].classList.add('is-revealed'); });
 
     at(2500, function () { show('#rule'); });
-    at(2650, function () { draw($('#swashLine'), 1700, 0); draw($('#swashHead'), 320, 1600); });
+    at(2650, function () {
+      draw($('#swashLine'), 1500, 0);
+      draw($('#swashTail'), 320, 1450);
+      draw($('#swashHead'), 260, 1730);
+    });
     at(2800, function () { whisps[0].classList.add('is-revealed'); });
     at(3010, function () { whisps[1].classList.add('is-revealed'); });
     at(3220, function () { whisps[2].classList.add('is-revealed'); });
@@ -194,7 +206,7 @@
       copy.style.transform = 'translateY(' + (-e * 20).toFixed(2) + 'vh)';
       copy.style.opacity   = fade.toFixed(3);
       // the drawn line belongs to the message, so it leaves with it
-      if (swash) swash.style.opacity = fade.toFixed(3);
+      if (swashWrap) swashWrap.style.opacity = fade.toFixed(3);
       media.style.transform = 'translateY(' + (e * 1.6).toFixed(2) + 'vh) scale(' + (1 + e * 0.045).toFixed(4) + ')';
 
       if (findhow) findhow.style.pointerEvents = p > 0.5 ? 'none' : '';
