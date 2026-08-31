@@ -60,7 +60,13 @@
 
     var low   = swashBox.y + swashBox.height;    // the arc's lowest point
     var nowY  = m.f + low * m.d;
-    var shift = clamp((target - nowY) / m.d, -140, 140);
+
+    // Below 900px the photograph sits at the foot of the stage with the
+    // message well above it, so there is no type to thread: the line stays
+    // where it was drawn, right on the wire.
+    var shift = window.innerWidth <= 900
+      ? 0
+      : clamp((target - nowY) / m.d, -140, 140);
 
     swashShift.setAttribute('transform', 'translate(0 ' + shift.toFixed(1) + ')');
 
