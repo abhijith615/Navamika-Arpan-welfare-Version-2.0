@@ -513,10 +513,20 @@ a{ color:inherit; }
   content:"";
   position:absolute;
   left:8.5cqw; width:4.5cqw; height:4.5cqw;
-  background:var(--cream);
 }
-.card__tab::before{ bottom:100%; border-bottom-right-radius:4.5cqw; }
-.card__tab::after { top:100%;    border-top-right-radius:4.5cqw; }
+/* a rounded corner is the ground OUTSIDE the arc, not a disc of it - so
+   these are radial gradients, not border-radius, or the shoulder would
+   bulge into the card instead of rounding off its edge */
+.card__tab::before{
+  bottom:100%;
+  background:radial-gradient(circle 4.5cqw at 0 0,
+    transparent 97%, var(--cream) 99%);
+}
+.card__tab::after{
+  top:100%;
+  background:radial-gradient(circle 4.5cqw at 0 100%,
+    transparent 97%, var(--cream) 99%);
+}
 
 .deck.is-in .card__tab{ transform:none; opacity:1; }
 .deck.is-in .card:nth-child(1) .card__tab{ transition-delay:340ms; }
