@@ -62,7 +62,9 @@
           <!-- the tail is drawn unshifted and rebuilt in JS, so however far
                the line above had to move, the arrow still lands on the wire -->
           <path class="swash__line" id="swashTail" d="M1128 396 C1162 389 1164 436 1206 424"/>
-          <path class="swash__head" id="swashHead" d="M1183 442 L1212 423 L1178 417"/>
+          <!-- barbs squared to the tail's arrival angle; the tail's last two
+               control points are fixed, so this holds at every viewport -->
+          <path class="swash__head" id="swashHead" d="M1185 444 L1212 423 L1178 419"/>
         </g>
       </svg>
      </div><!-- /.stage__media -->

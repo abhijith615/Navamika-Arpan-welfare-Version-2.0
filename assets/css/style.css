@@ -643,8 +643,20 @@ a{ color:inherit; }
      marks in a 240px-tall photograph read as a tangle - so the cue keeps
      its button and loses its doodle here */
   .cue__doodle{ display:none; }
-  .stage__copy{ padding-top:clamp(26px, 7vh, 66px); }
-  .whisper{ margin-top:clamp(12px, 2vh, 22px); }
+  /* Reserve the photograph's band, then centre the message in the cream
+     left above it, so a tall phone does not park all the slack in one
+     gap between the text and the picture. */
+  .stage__copy{
+    padding-top:clamp(10px, 2vh, 26px);
+    padding-bottom:66.67vw;
+    justify-content:center;
+  }
+  .cue{
+    position:absolute; left:0; right:0;
+    bottom:clamp(12px, 2.6vh, 30px);
+    margin-top:0;
+  }
+  .whisper{ margin-top:clamp(12px, 2vh, 22px); margin-bottom:0; }
 
   .deck{ grid-template-columns:repeat(2, 1fr); gap:18px; }
   .ribbons{ padding-left:0; justify-content:center; }
