@@ -154,27 +154,45 @@
      So: anchored to the photograph, nudged by the type.
      ---------------------------------------------------------- */
 
-  var swash    = $('#swash');
-  var ruleEl   = $('#rule');
-  var whisperEl= $('.whisper');
-  var SWASH_LOW = 457;          // lowest point of the drawn arc, in viewBox units
+  var swash     = $('#swash');
+  var swashLine = $('#swashLine');
+  var ruleEl    = $('#rule');
+  var whisperEl = $('.whisper');
+  var statement = $('.statement');
+  var swashBox  = null;
 
   function placeSwash() {
-    if (!swash || !ruleEl || !whisperEl) return;
+    if (!swash || !ruleEl || !whisperEl || !statement) return;
     var m = svg.getScreenCTM();
     if (!m || !m.d) return;
+    // below 900px the swash is display:none and getBBox reports nothing;
+    // don't cache that, or widening the window would keep the empty box
+    if (!swashBox || !swashBox.height) {
+      var b = swashLine.getBBox();
+      if (!b.height) return;
+      swashBox = b;
+    }
 
-    var r = ruleEl.getBoundingClientRect();
-    var w = whisperEl.getBoundingClientRect();
-    var lo = r.bottom + 5;
-    var hi = w.top - 4;
-    var target = hi > lo ? lo + (hi - lo) * 0.74 : hi;
+    var r  = ruleEl.getBoundingClientRect();
+    var w  = whisperEl.getBoundingClientRect();
+    var st = statement.getBoundingClientRect();
 
-    var nowY  = m.f + SWASH_LOW * m.d;              // where the arc sits today
-    var shift = (target - nowY) / m.d;              // ...in viewBox units
-    shift = clamp(shift, -46, 24);                  // never let it leave the boy
+    // the arc's lowest point threads the gap between the dash and the whisper
+    var lo = r.bottom + 5, hi = w.top - 4;
+    var lowTarget = hi > lo ? lo + (hi - lo) * 0.7 : hi;
+    // ...and the loop's top rides just above the headline
+    var topTarget = st.top - st.height * 0.08;
 
-    swash.setAttribute('transform', 'translate(0 ' + shift.toFixed(1) + ')');
+    var lowVB = (lowTarget - m.f) / m.d;
+    var topVB = (topTarget - m.f) / m.d;
+
+    // stretch vertically to span that band; the photo's crop scale varies a
+    // lot with viewport aspect, so a plain translate cannot hold both ends
+    var sy = clamp((lowVB - topVB) / swashBox.height, 0.55, 1.9);
+    var ty = lowVB - sy * (swashBox.y + swashBox.height);
+
+    swash.setAttribute('transform',
+      'translate(0 ' + ty.toFixed(1) + ') scale(1 ' + sy.toFixed(3) + ')');
   }
 
   /* ----------------------------------------------------------
@@ -245,9 +263,25 @@
     if (n) n.classList.add('is-revealed');
   }
 
+  /* A non-scaling stroke measures its dash pattern in screen pixels, so the
+     reveal length has to be measured there too, not in user units. */
+  function screenLength(node) {
+    var m = node.getScreenCTM();
+    if (!m) return node.getTotalLength();
+    var L = node.getTotalLength(), N = 48, total = 0, prev = null, p;
+    for (var i = 0; i <= N; i++) {
+      p = node.getPointAtLength(L * i / N).matrixTransform(m);
+      if (prev) total += Math.sqrt((p.x - prev.x) * (p.x - prev.x) + (p.y - prev.y) * (p.y - prev.y));
+      prev = p;
+    }
+    return total || L;
+  }
+
   /* pen-stroke draw-in for the hand-drawn marks */
   function prepDraw(node) {
-    var len = node.getTotalLength ? node.getTotalLength() : 0;
+    if (!node.getTotalLength) return null;
+    var scaled = getComputedStyle(node).vectorEffect === 'non-scaling-stroke';
+    var len = scaled ? screenLength(node) : node.getTotalLength();
     if (!len) return null;
     node.style.strokeDasharray  = len;
     node.style.strokeDashoffset = len;

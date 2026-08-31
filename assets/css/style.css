@@ -185,9 +185,10 @@ a{ color:inherit; }
   width:100%; height:100%;
   overflow:visible;
 }
+/* The wire is no longer drawn - the photographed one is enough. The path
+   stays in the DOM because the travelling pulse is measured along it. */
 .wire__line{
-  fill:none; stroke:rgba(72,46,30,.44);
-  stroke-width:2.2; stroke-linecap:round;
+  fill:none; stroke:none;
 }
 .wire__halo{
   fill:none; stroke:url(#pulseGrad);
@@ -204,7 +205,10 @@ a{ color:inherit; }
 
 .swash__line, .swash__head{
   fill:none; stroke:var(--terracotta-2);
-  stroke-width:2.9; stroke-linecap:round; stroke-linejoin:round;
+  /* the group is scaled vertically to fit the type, so keep the pen
+     width in screen units or the line would thin out as it stretches */
+  vector-effect:non-scaling-stroke;
+  stroke-width:2.7; stroke-linecap:round; stroke-linejoin:round;
   opacity:.92;
 }
 
@@ -384,7 +388,7 @@ a{ color:inherit; }
   background:
     linear-gradient(116deg, rgba(255,253,249,.6) 0%, rgba(255,253,249,0) 46%),
     var(--cream-lift);
-  border-radius:3.4cqw;
+  border-radius:4cqw;
   box-shadow:
     0 1px 2px rgba(84,56,34,.05),
     0 14px 30px -18px rgba(84,56,34,.34);
@@ -421,7 +425,7 @@ a{ color:inherit; }
 .card__icon--heart svg{ width:25cqw; }
 .card__icon--eye   svg{ width:31cqw; }
 .card__icon--book  svg{ width:28cqw; }
-.card__icon--pot   svg{ width:26cqw; }
+.card__icon--pot   svg{ width:27cqw; }
 
 .card__name{
   margin:15.2cqw 0 0;
@@ -460,46 +464,53 @@ a{ color:inherit; }
 /* punched holes, on the 88.5% line */
 .card__perf{
   position:absolute;
-  top:9cqw; bottom:9cqw;
-  left:88.5%; width:2.4cqw; margin-left:-1.2cqw;
+  top:10cqw; bottom:10cqw;
+  left:88.5%; width:3.6cqw; margin-left:-1.8cqw;
   background-image:
-    radial-gradient(circle at 50% 42%, rgba(114,90,60,.62) 0 33%, transparent 40%),
-    radial-gradient(circle at 50% 58%, rgba(255,253,248,.95) 0 34%, transparent 42%);
-  background-size:2.4cqw 5.63cqw;
+    /* the rim of the punch, then the light it lets through */
+    radial-gradient(circle at 50% 50%,
+      transparent 0 35%, rgba(116,92,62,.40) 37% 45%, transparent 50%),
+    radial-gradient(circle at 50% 57%,
+      rgba(255,255,255,.85) 0 44%, transparent 50%),
+    radial-gradient(circle at 50% 50%, #FDFAF4 0 38%, transparent 43%);
+  background-size:3.6cqw 7.1cqw;
   background-repeat:repeat-y;
 }
 
 /* a square rotated 45deg and hung half off the edge reads as a cut notch */
 .card__notch{
   position:absolute; left:88.5%;
+  width:6.3cqw; height:13.8cqw; margin-top:-6.9cqw;
   background:var(--cream);
-  transform:translate(-50%,-50%) rotate(45deg);
+  transform:translateX(-50%);
 }
 /* ...and it is clipped to the half that actually falls inside the card,
    so the other half never paints over the card's own shadow */
 .card__notch--top{
-  top:0; width:3.75cqw; height:3.75cqw;
-  border-bottom-right-radius:1.1cqw;
-  clip-path:polygon(100% 0, 100% 100%, 0 100%);
+  top:0;
+  border-radius:0 0 3.15cqw 3.15cqw;
+  clip-path:inset(50% 0 0 0);
 }
 .card__notch--bot{
-  top:100%; width:5.8cqw; height:5.8cqw;
-  border-top-left-radius:1.3cqw;
-  clip-path:polygon(0 0, 100% 0, 0 100%);
+  top:100%;
+  border-radius:3.15cqw 3.15cqw 0 0;
+  clip-path:inset(0 0 50% 0);
 }
 
-/* the hands in the Spark & Story mark are drawn over the pot */
+/* the hand in the Spark & Story mark is drawn over the pot,
+   and its two fingers are outlined capsules laid on top of it */
 .card__icon .hnd{ fill:var(--cream-lift); }
+.card__icon .fin{ stroke:var(--cream-lift); }
 
 .card__tab{
   position:absolute;
-  left:86.3%; width:13.2%;
+  left:88.5%; width:15.5%;
   top:33%; height:36.8%;
   overflow:hidden;
   background:
     linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 34%),
     var(--tone);
-  border-radius:1.4cqw 3.6cqw 3.6cqw 1.4cqw;
+  border-radius:0 4.6cqw 4.6cqw 0;
   display:flex; align-items:center; justify-content:center;
   box-shadow:0 4px 12px -6px rgba(48,30,16,.55);
   transform:translateX(-10%) scaleX(.35);
@@ -520,7 +531,7 @@ a{ color:inherit; }
   letter-spacing:.15em; text-transform:uppercase;
   color:#F6EEE2; white-space:nowrap;
 }
-.card:hover .card__tab{ width:16.4%; }
+.card:hover .card__tab{ width:18.6%; }
 
 
 /* ---------- the ribbon deck note ---------- */
