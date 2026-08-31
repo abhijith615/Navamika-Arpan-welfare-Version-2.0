@@ -448,7 +448,7 @@ a{ color:inherit; }
 .card__flourish{
   width:32cqw; height:auto;
   color:var(--terracotta-2);
-  margin-top:auto; padding-top:12cqw;
+  margin-top:auto; padding-top:10.4cqw;
   transition:transform 560ms var(--ease-soft);
 }
 .card:hover .card__flourish{ transform:translateX(5%); }
