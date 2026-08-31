@@ -38,6 +38,7 @@
   var ruleEl    = $('#rule');
   var whisperEl = $('.whisper');
   var swashBox  = null;
+  var inking    = false;   // true once the ink is allowed to show
 
   function placeSwash() {
     if (!swashShift || !swashLine || !ruleEl || !whisperEl) return;
@@ -68,6 +69,9 @@
     swashTail.setAttribute('d',
       'M1128 ' + sy.toFixed(1) +
       ' C1162 ' + (sy - 7).toFixed(1) + ' 1164 436 1206 424');
+
+    // its length just changed, so re-hide it against the new path
+    if (!inking) prepDraw(swashTail);
   }
 
   /* ----------------------------------------------------------
@@ -106,6 +110,7 @@
     var scaled = getComputedStyle(node).vectorEffect === 'non-scaling-stroke';
     var len = scaled ? screenLength(node) : node.getTotalLength();
     if (!len) return null;
+    len *= 1.03;            // cover rounding, or a sliver leaks at the tip
     node.style.strokeDasharray  = len;
     node.style.strokeDashoffset = len;
     return len;
@@ -130,6 +135,8 @@
     $$('.line, .w').forEach(function (n) { n.classList.add('is-revealed'); });
     show('#rule');
     if (findhow) findhow.classList.add('is-revealed');
+    inking = true;
+    if (swashWrap) swashWrap.classList.add('is-inking');
     inkMarks.forEach(function (n) {
       n.style.transition = 'stroke-dashoffset 700ms ease';
       n.style.strokeDashoffset = 0;
@@ -154,6 +161,8 @@
 
     at(2500, function () { show('#rule'); });
     at(2650, function () {
+      inking = true;
+      if (swashWrap) swashWrap.classList.add('is-inking');
       draw($('#swashLine'), 1500, 0);
       draw($('#swashTail'), 320, 1450);
       draw($('#swashHead'), 260, 1730);

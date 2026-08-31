@@ -185,6 +185,10 @@ a{ color:inherit; }
   width:100%; height:100%;
   overflow:visible;
 }
+/* nothing of the drawn line shows until the sequence releases it */
+.swash{ visibility:hidden; }
+.swash.is-inking{ visibility:visible; }
+
 .swash__line, .swash__head{
   fill:none; stroke:var(--terracotta-2);
   /* a steady pen weight at every screen size */
@@ -668,6 +672,7 @@ a{ color:inherit; }
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce){
+  .swash{ visibility:visible; }
   html{ scroll-behavior:auto; }
   .hero-runway{ height:100vh; }
   .stage__photo{ opacity:1; }
