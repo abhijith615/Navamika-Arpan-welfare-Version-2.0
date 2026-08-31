@@ -388,7 +388,7 @@ a{ color:inherit; }
   background:
     linear-gradient(116deg, rgba(255,253,249,.6) 0%, rgba(255,253,249,0) 46%),
     var(--cream-lift);
-  border-radius:4cqw;
+  border-radius:4.7cqw;
   box-shadow:
     0 1px 2px rgba(84,56,34,.05),
     0 14px 30px -18px rgba(84,56,34,.34);
@@ -459,58 +459,61 @@ a{ color:inherit; }
 }
 .card:hover .card__flourish{ transform:translateX(5%); }
 
-/* ---------- the ticket: perforation, notches, tab ---------- */
+/* ---------- the ticket: perforation, notches, tab ----------
+   Measured off the reference bookmark: the perforation runs at 89.3% of
+   the card's width, and the cream stub to its right is genuinely cut
+   where the tab sits, with a rounded shoulder above and below it.
+   ---------------------------------------------------------------- */
 
-/* punched holes, on the 88.5% line */
+/* the punched holes */
 .card__perf{
   position:absolute;
-  top:10cqw; bottom:10cqw;
-  left:88.5%; width:3.6cqw; margin-left:-1.8cqw;
+  top:9cqw; bottom:9cqw;
+  left:89.3%; width:3.3cqw; margin-left:-1.65cqw;
   background-image:
     /* the rim of the punch, then the light it lets through */
     radial-gradient(circle at 50% 50%,
-      transparent 0 35%, rgba(116,92,62,.40) 37% 45%, transparent 50%),
+      transparent 0 34%, rgba(116,92,62,.42) 36% 45%, transparent 50%),
     radial-gradient(circle at 50% 57%,
       rgba(255,255,255,.85) 0 44%, transparent 50%),
     radial-gradient(circle at 50% 50%, #FDFAF4 0 38%, transparent 43%);
-  background-size:3.6cqw 7.1cqw;
+  background-size:3.3cqw 7cqw;
   background-repeat:repeat-y;
 }
 
-/* a square rotated 45deg and hung half off the edge reads as a cut notch */
+/* a rounded box hung half off the edge reads as a cut notch; it is
+   clipped to the half inside the card so the rest never paints over
+   the card's own shadow */
 .card__notch{
-  position:absolute; left:88.5%;
-  width:6.3cqw; height:13.8cqw; margin-top:-6.9cqw;
+  position:absolute; left:89.3%;
+  width:6.2cqw; height:9.4cqw; margin-top:-4.7cqw;
   background:var(--cream);
   transform:translateX(-50%);
 }
-/* ...and it is clipped to the half that actually falls inside the card,
-   so the other half never paints over the card's own shadow */
 .card__notch--top{
   top:0;
-  border-radius:0 0 3.15cqw 3.15cqw;
+  border-radius:0 0 3.1cqw 3.1cqw;
   clip-path:inset(50% 0 0 0);
 }
 .card__notch--bot{
   top:100%;
-  border-radius:3.15cqw 3.15cqw 0 0;
+  border-radius:3.1cqw 3.1cqw 0 0;
   clip-path:inset(0 0 50% 0);
 }
 
 /* the hand in the Spark & Story mark is drawn over the pot,
-   and its two fingers are outlined capsules laid on top of it */
+   and its two fingers sit behind the palm */
 .card__icon .hnd{ fill:var(--cream-lift); }
 .card__icon .fin{ stroke:var(--cream-lift); }
 
 .card__tab{
   position:absolute;
-  left:88.5%; width:15.5%;
-  top:33%; height:36.8%;
-  overflow:hidden;
+  left:87%; width:15.3%;
+  top:34.8%; height:35.6%;
   background:
     linear-gradient(180deg, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 34%),
     var(--tone);
-  border-radius:0 4.6cqw 4.6cqw 0;
+  border-radius:0 4.5cqw 4.5cqw 0;
   display:flex; align-items:center; justify-content:center;
   box-shadow:0 4px 12px -6px rgba(48,30,16,.55);
   transform:translateX(-10%) scaleX(.35);
@@ -519,6 +522,20 @@ a{ color:inherit; }
   transition:transform 780ms var(--ease-page), opacity 520ms ease,
              width 460ms var(--ease-soft);
 }
+
+/* the two shoulders: quarter-discs of the page ground that round off the
+   stub where the tab interrupts it. Anchored from the tab's left edge so
+   they hold still while the tab widens on hover. */
+.card__tab::before,
+.card__tab::after{
+  content:"";
+  position:absolute;
+  left:8.5cqw; width:4.5cqw; height:4.5cqw;
+  background:var(--cream);
+}
+.card__tab::before{ bottom:100%; border-bottom-right-radius:4.5cqw; }
+.card__tab::after { top:100%;    border-top-right-radius:4.5cqw; }
+
 .deck.is-in .card__tab{ transform:none; opacity:1; }
 .deck.is-in .card:nth-child(1) .card__tab{ transition-delay:340ms; }
 .deck.is-in .card:nth-child(2) .card__tab{ transition-delay:450ms; }
@@ -531,7 +548,7 @@ a{ color:inherit; }
   letter-spacing:.15em; text-transform:uppercase;
   color:#F6EEE2; white-space:nowrap;
 }
-.card:hover .card__tab{ width:18.6%; }
+.card:hover .card__tab{ width:18.4%; }
 
 
 /* ---------- the ribbon deck note ---------- */
