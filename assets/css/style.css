@@ -419,7 +419,7 @@ a{ color:inherit; }
 .card__icon--heart svg{ width:25cqw; }
 .card__icon--eye   svg{ width:31cqw; }
 .card__icon--book  svg{ width:28cqw; }
-.card__icon--pot   svg{ width:27cqw; }
+.card__icon--pot   img{ width:27cqw; height:auto; }
 
 .card__name{
   margin:15.2cqw 0 0;
