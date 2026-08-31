@@ -178,35 +178,16 @@ a{ color:inherit; }
     linear-gradient(to bottom, rgba(241,232,223,0) 80%, rgba(241,232,223,.22) 100%);
 }
 
-/* ---------- the wire ---------- */
+/* ---------- the drawn line ---------- */
 
 .wirelayer{
   position:absolute; inset:0;
   width:100%; height:100%;
   overflow:visible;
 }
-/* The wire is no longer drawn - the photographed one is enough. The path
-   stays in the DOM because the travelling pulse is measured along it. */
-.wire__line{
-  fill:none; stroke:none;
-}
-.wire__halo{
-  fill:none; stroke:url(#pulseGrad);
-  stroke-width:13; stroke-linecap:round; opacity:0;
-}
-.wire__pulse{
-  fill:none; stroke:url(#pulseGrad);
-  stroke-width:4.2; stroke-linecap:round; opacity:0;
-}
-.ring{
-  fill:none; stroke:#FBE3BC; stroke-width:2.6; opacity:0;
-  transform-box:fill-box; transform-origin:center;
-}
-
 .swash__line, .swash__head{
   fill:none; stroke:var(--terracotta-2);
-  /* the group is scaled vertically to fit the type, so keep the pen
-     width in screen units or the line would thin out as it stretches */
+  /* a steady pen weight at every screen size */
   vector-effect:non-scaling-stroke;
   stroke-width:2.7; stroke-linecap:round; stroke-linejoin:round;
   opacity:.92;
@@ -286,8 +267,8 @@ a{ color:inherit; }
 }
 .cue__doodle{
   position:absolute; bottom:100%; left:50%;
-  transform:translateX(-38%);
-  width:clamp(146px, 14.4vw, 208px);
+  transform:translateX(-6%);
+  width:clamp(58px, 5.9vw, 86px);
   margin-bottom:clamp(-2px, .4vh, 6px);
   pointer-events:none;
 }
@@ -651,7 +632,7 @@ a{ color:inherit; }
   .nav__links{ gap:14px; }
   .nav__links a{ font-size:11px; }
   .statement{ font-size:26px; }
-  .cue__doodle{ width:132px; transform:translateX(-40%); }
+  .cue__doodle{ width:56px; transform:translateX(-10%); }
   .stage__wash{
     background:
       radial-gradient(48% 32% at 50% 84%,

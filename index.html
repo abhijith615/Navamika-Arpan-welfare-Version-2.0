@@ -48,27 +48,9 @@
            alt="Two children sit apart on a hillside at dusk, speaking to one another through a tin-can telephone.">
       <div class="stage__wash" aria-hidden="true"></div>
 
-      <!-- the wire, the pulse, the swash - all anchored to the photograph -->
+      <!-- the drawn line, anchored to the photograph -->
       <svg class="wirelayer" id="wirelayer" viewBox="0 0 1536 1024"
            preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="pulseGrad" gradientUnits="userSpaceOnUse" x1="1235" y1="0" x2="170" y2="0">
-            <stop offset="0"   stop-color="#FFF3DE"/>
-            <stop offset=".45" stop-color="#E9944A"/>
-            <stop offset="1"   stop-color="#B4461D"/>
-          </linearGradient>
-          <filter id="pulseGlow" x="-20%" y="-900%" width="140%" height="1900%">
-            <feGaussianBlur stdDeviation="7"/>
-          </filter>
-        </defs>
-
-        <path class="wire__line"  id="wireLine"/>
-        <path class="wire__halo"  id="wireHalo"  filter="url(#pulseGlow)"/>
-        <path class="wire__pulse" id="wirePulse"/>
-
-        <circle class="ring" id="ringSend" cx="1235" cy="419" r="12"/>
-        <circle class="ring" id="ringRecv" cx="170"  cy="374" r="12"/>
-
         <g class="swash" id="swash">
           <!-- one continuous line from the boy's face to the girl's can,
                curling clockwise into a loop on the way -->
@@ -95,12 +77,10 @@
         </p>
 
         <div class="cue">
-          <svg class="cue__doodle" id="cueDoodle" viewBox="0 0 220 128" fill="none" aria-hidden="true" focusable="false">
-            <!-- one arrow down to the cue, and one loop away from it -->
-            <path class="dd" d="M126 6 C112 24 98 48 90 70 C86 82 84 92 83 100"/>
-            <path class="dd dd--head" d="M73 86 L83 106 L94 88"/>
-            <path class="dd" d="M104 104 C118 112 138 106 140 88 C142 72 126 66 118 78 C110 90 124 104 142 96 C156 90 166 60 172 22"/>
-            <path class="dd dd--head" d="M158 30 L174 16 L178 36"/>
+          <svg class="cue__doodle" id="cueDoodle" viewBox="0 0 90 110" fill="none" aria-hidden="true" focusable="false">
+            <!-- a single loop lifting away from the cue -->
+            <path class="dd" d="M12 98 C26 106 46 100 48 82 C50 66 34 60 26 72 C18 84 32 98 50 90 C64 84 74 54 80 16"/>
+            <path class="dd dd--head" d="M66 24 L82 10 L86 30"/>
           </svg>
 
           <a class="findhow" id="findhow" href="#s02">

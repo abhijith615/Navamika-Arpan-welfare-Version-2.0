@@ -1,6 +1,6 @@
 /* ============================================================
    Navamika Arpan - Section 01
-   The wire carries the idea. Everything else waits its turn.
+   The page uncovers itself, one line at a time.
    ============================================================ */
 (function () {
   'use strict';
@@ -12,12 +12,6 @@
   var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
 
   var svg       = $('#wirelayer');
-  var wireLine  = $('#wireLine');
-  var wireHalo  = $('#wireHalo');
-  var wirePulse = $('#wirePulse');
-  var ringSend  = $('#ringSend');
-  var ringRecv  = $('#ringRecv');
-  var stage     = $('#stage');
   var media     = $('#media');
   var photo     = $('#photo');
   var copy      = $('.stage__copy');
@@ -25,147 +19,30 @@
   var findhow   = $('#findhow');
 
   /* ----------------------------------------------------------
-     1. THE WIRE
-     Points traced from the photograph itself, in the image's own
-     coordinate space (1536 x 1024). The <svg> uses the same
-     viewBox with preserveAspectRatio="slice", so it stays locked
-     to the photographed wire at every screen size.
-     ---------------------------------------------------------- */
+     1. THE DRAWN LINE
+     It belongs to the photograph - it leaves the boy's face and
+     points at the girl's can - so it lives in the image's own
+     coordinate space (1536 x 1024). The <svg> shares the photo's
+     viewBox and preserveAspectRatio, so it stays locked to the
+     picture at every screen size.
 
-  var BASE = [
-    [170, 374], [300, 400], [420, 432], [540, 454], [660, 467],
-    [780, 471], [900, 468], [1020, 457], [1140, 438], [1235, 419]
-  ];
-
-  // live copy that the cursor is allowed to bend
-  var live = BASE.map(function (p) { return [p[0], p[1]]; });
-  var goal = BASE.map(function (p) { return [p[0], p[1]]; });
-
-  // Catmull-Rom through the points -> one smooth cubic path
-  function toPath(pts) {
-    var d = 'M' + pts[0][0].toFixed(2) + ' ' + pts[0][1].toFixed(2);
-    for (var i = 0; i < pts.length - 1; i++) {
-      var p0 = pts[i - 1] || pts[i];
-      var p1 = pts[i];
-      var p2 = pts[i + 1];
-      var p3 = pts[i + 2] || pts[i + 1];
-      var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
-      var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
-      d += 'C' + c1x.toFixed(2) + ' ' + c1y.toFixed(2) + ',' +
-                 c2x.toFixed(2) + ' ' + c2y.toFixed(2) + ',' +
-                 p2[0].toFixed(2) + ' ' + p2[1].toFixed(2);
-    }
-    return d;
-  }
-
-  function paintWire() {
-    wireLine.setAttribute('d', toPath(live));
-  }
-  paintWire();
-
-  var LEN = wireLine.getTotalLength();
-  var SEG = 86;                       // length of the travelling light
-
-  /* ----------------------------------------------------------
-     2. TENSION
-     The wire answers the cursor the way a real thread would:
-     a little, and only near the hand. Both ends stay pinned.
-     ---------------------------------------------------------- */
-
-  var REACH   = 300;   // viewBox units of influence
-  var MAX_PX  = 7;     // hard ceiling on displacement, in screen pixels
-  var pointer = null;
-  var raf     = null;
-
-  function vbScale() {
-    var m = svg.getScreenCTM();
-    return m ? m.a : 1;              // screen px per viewBox unit
-  }
-
-  function toViewBox(clientX, clientY) {
-    var m = svg.getScreenCTM();
-    if (!m) return null;
-    var pt = svg.createSVGPoint();
-    pt.x = clientX; pt.y = clientY;
-    return pt.matrixTransform(m.inverse());
-  }
-
-  function retarget() {
-    var maxVB = MAX_PX / (vbScale() || 1);
-    for (var i = 0; i < BASE.length; i++) {
-      var bx = BASE[i][0], by = BASE[i][1];
-      var dx = 0, dy = 0;
-
-      if (pointer) {
-        var vx = pointer.x - bx, vy = pointer.y - by;
-        var dist = Math.sqrt(vx * vx + vy * vy);
-        if (dist < REACH && dist > 0.001) {
-          var fall = Math.exp(-(dist / REACH) * (dist / REACH) * 3.2);
-          // a string is fixed at both ends: no pull at the cans
-          var t    = i / (BASE.length - 1);
-          var pin  = Math.sin(Math.PI * t);
-          var amp  = maxVB * fall * pin;
-          dx = (vx / dist) * amp * 0.35;   // threads give vertically, mostly
-          dy = (vy / dist) * amp;
-        }
-      }
-      goal[i][0] = bx + dx;
-      goal[i][1] = by + dy;
-    }
-  }
-
-  function settle() {
-    var moved = false;
-    for (var i = 0; i < live.length; i++) {
-      var ox = live[i][0], oy = live[i][1];
-      live[i][0] += (goal[i][0] - ox) * 0.12;
-      live[i][1] += (goal[i][1] - oy) * 0.12;
-      if (Math.abs(live[i][0] - ox) > 0.01 || Math.abs(live[i][1] - oy) > 0.01) moved = true;
-    }
-    paintWire();
-    if (moved || pointer) {
-      raf = requestAnimationFrame(settle);
-    } else {
-      raf = null;
-    }
-  }
-
-  function wake() { if (raf === null) raf = requestAnimationFrame(settle); }
-
-  if (!REDUCED && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    stage.addEventListener('pointermove', function (e) {
-      pointer = toViewBox(e.clientX, e.clientY);
-      retarget();
-      wake();
-    }, { passive: true });
-
-    stage.addEventListener('pointerleave', function () {
-      pointer = null;
-      retarget();
-      wake();
-    }, { passive: true });
-  }
-
-  /* ----------------------------------------------------------
-     2b. THE SWASH
-     The drawn line belongs to the photograph - it leaves the boy
-     and points at the girl - but it has to thread the gap between
-     the dash and the whisper, and that gap moves with the layout.
-     So: anchored to the photograph, nudged by the type.
+     Vertically it also has to thread the gap between the dash and
+     the whisper, and that gap moves with the layout. So it is
+     shifted - never scaled, or the hand-drawn stroke would warp.
      ---------------------------------------------------------- */
 
   var swash     = $('#swash');
   var swashLine = $('#swashLine');
   var ruleEl    = $('#rule');
   var whisperEl = $('.whisper');
-  var statement = $('.statement');
   var swashBox  = null;
 
   function placeSwash() {
-    if (!swash || !ruleEl || !whisperEl || !statement) return;
+    if (!swash || !swashLine || !ruleEl || !whisperEl) return;
     var m = svg.getScreenCTM();
     if (!m || !m.d) return;
-    // below 900px the swash is display:none and getBBox reports nothing;
+
+    // below 900px the line is display:none and getBBox reports nothing;
     // don't cache that, or widening the window would keep the empty box
     if (!swashBox || !swashBox.height) {
       var b = swashLine.getBBox();
@@ -173,32 +50,22 @@
       swashBox = b;
     }
 
-    var r  = ruleEl.getBoundingClientRect();
-    var w  = whisperEl.getBoundingClientRect();
-    var st = statement.getBoundingClientRect();
-
-    // the arc's lowest point threads the gap between the dash and the whisper
+    var r = ruleEl.getBoundingClientRect();
+    var w = whisperEl.getBoundingClientRect();
     var lo = r.bottom + 5, hi = w.top - 4;
-    var lowTarget = hi > lo ? lo + (hi - lo) * 0.7 : hi;
-    // ...and the loop's top rides just above the headline
-    var topTarget = st.top - st.height * 0.08;
+    var target = hi > lo ? lo + (hi - lo) * 0.7 : hi;
 
-    var lowVB = (lowTarget - m.f) / m.d;
-    var topVB = (topTarget - m.f) / m.d;
+    var low   = swashBox.y + swashBox.height;    // the arc's lowest point
+    var nowY  = m.f + low * m.d;
+    var shift = clamp((target - nowY) / m.d, -140, 140);
 
-    // stretch vertically to span that band; the photo's crop scale varies a
-    // lot with viewport aspect, so a plain translate cannot hold both ends
-    var sy = clamp((lowVB - topVB) / swashBox.height, 0.55, 1.9);
-    var ty = lowVB - sy * (swashBox.y + swashBox.height);
-
-    swash.setAttribute('transform',
-      'translate(0 ' + ty.toFixed(1) + ') scale(1 ' + sy.toFixed(3) + ')');
+    swash.setAttribute('transform', 'translate(0 ' + shift.toFixed(1) + ')');
   }
 
   /* ----------------------------------------------------------
-     3. THE SEQUENCE
-     One child speaks. The wire carries it. Only then does the
-     sentence appear. Meaning first, words second.
+     2. THE SEQUENCE
+     Soft clipping masks, one line after another, like a printed
+     page being uncovered.
      ---------------------------------------------------------- */
 
   var timers = [];
@@ -206,65 +73,13 @@
 
   function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
 
-  function ripple(node) {
-    if (REDUCED || !node.animate) return;
-    node.animate(
-      [{ transform: 'scale(.55)', opacity: 0 },
-       { transform: 'scale(1.15)', opacity: .85, offset: .22 },
-       { transform: 'scale(3.6)', opacity: 0 }],
-      { duration: 1150, easing: 'cubic-bezier(.2,.7,.2,1)' }
-    );
-  }
-
-  /* The lit length of wire is rebuilt from the wire itself every frame,
-     so it bends with the wire and needs no dash trickery. */
-  function litSegment(head) {
-    var a = clamp(head, 0, LEN);
-    var b = clamp(head + SEG, 0, LEN);
-    if (b - a < 0.5) return '';
-    var d = '', N = 16, pt;
-    for (var i = 0; i <= N; i++) {
-      pt = wireLine.getPointAtLength(a + (b - a) * (i / N));
-      d += (i ? 'L' : 'M') + pt.x.toFixed(1) + ' ' + pt.y.toFixed(1);
-    }
-    return d;
-  }
-
-  function clearPulse() {
-    wirePulse.style.opacity = 0; wireHalo.style.opacity = 0;
-    wirePulse.removeAttribute('d'); wireHalo.removeAttribute('d');
-  }
-
-  function sendPulse(duration) {
-    if (REDUCED) return;
-    var t0 = null;
-    requestAnimationFrame(function step(now) {
-      if (t0 === null) t0 = now;
-      var p = clamp((now - t0) / duration, 0, 1);
-      // ease in, ease out - the way a sound leaves and lands
-      var e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
-
-      // it leaves the girl (the far end) and arrives at the boy (the near end)
-      var d = litSegment(LEN * (1 - e) - SEG / 2);
-      wirePulse.setAttribute('d', d);
-      wireHalo.setAttribute('d', d);
-
-      var fade = p < .1 ? p / .1 : p > .86 ? (1 - p) / .14 : 1;
-      wirePulse.style.opacity = fade;
-      wireHalo.style.opacity  = fade * .55;
-
-      if (p < 1) requestAnimationFrame(step);
-      else clearPulse();
-    });
-  }
-
   function show(sel) {
     var n = typeof sel === 'string' ? $(sel) : sel;
     if (n) n.classList.add('is-revealed');
   }
 
-  /* A non-scaling stroke measures its dash pattern in screen pixels, so the
-     reveal length has to be measured there too, not in user units. */
+  /* A non-scaling stroke measures its dash pattern in screen pixels,
+     so the reveal length has to be measured there too. */
   function screenLength(node) {
     var m = node.getScreenCTM();
     if (!m) return node.getTotalLength();
@@ -287,6 +102,7 @@
     node.style.strokeDashoffset = len;
     return len;
   }
+
   function draw(node, duration, delay) {
     var len = prepDraw(node);
     if (len === null) return;
@@ -322,32 +138,21 @@
     // reduced motion, or the visitor already moved on while the photo loaded
     if (REDUCED || done) { done = false; finish(); return; }
 
-    var TRAVEL = 1400;
     var lines  = $$('.line');
     var whisps = $$('.w');
 
-    /* --- first message --- */
-    at(1200, function () { ripple(ringSend); sendPulse(TRAVEL); });
-    at(1200 + TRAVEL, function () { ripple(ringRecv); });
-    at(1200 + TRAVEL + 150, function () { lines[0].classList.add('is-revealed'); });
+    at(700,  function () { lines[0].classList.add('is-revealed'); });
+    at(1600, function () { lines[1].classList.add('is-revealed'); });
 
-    /* --- a small pause, then it travels again --- */
-    var second = 1200 + TRAVEL + 150 + 1250;           // ~4000ms
-    at(second, function () { ripple(ringSend); sendPulse(TRAVEL); });
-    at(second + TRAVEL, function () { ripple(ringRecv); });
-    at(second + TRAVEL + 150, function () { lines[1].classList.add('is-revealed'); });
-
-    /* --- and only now, the quiet detail --- */
-    var after = second + TRAVEL + 150;                  // ~5550ms
-    at(after + 700,  function () { show('#rule'); });
-    at(after + 850,  function () { draw($('#swashLine'), 1600, 0); draw($('#swashHead'), 320, 1500); });
-    at(after + 950,  function () { whisps[0].classList.add('is-revealed'); });
-    at(after + 1160, function () { whisps[1].classList.add('is-revealed'); });
-    at(after + 1370, function () { whisps[2].classList.add('is-revealed'); });
-    at(after + 1750, function () {
-      $$('.dd').forEach(function (n, i) { draw(n, 620, i * 130); });
+    at(2500, function () { show('#rule'); });
+    at(2650, function () { draw($('#swashLine'), 1700, 0); draw($('#swashHead'), 320, 1600); });
+    at(2800, function () { whisps[0].classList.add('is-revealed'); });
+    at(3010, function () { whisps[1].classList.add('is-revealed'); });
+    at(3220, function () { whisps[2].classList.add('is-revealed'); });
+    at(3900, function () {
+      $$('.dd').forEach(function (n, i) { draw(n, 620, i * 140); });
     });
-    at(after + 2050, function () {
+    at(4200, function () {
       if (findhow) findhow.classList.add('is-revealed');
       timers.push(setTimeout(function () { done = true; }, 1000));
     });
@@ -372,7 +177,7 @@
   }
 
   /* ----------------------------------------------------------
-     4. THE LINGER
+     3. THE LINGER
      The photograph holds its ground. The words drift up and out.
      ---------------------------------------------------------- */
 
@@ -405,7 +210,7 @@
   }
 
   /* ----------------------------------------------------------
-     5. THE CARDS
+     4. THE CARDS
      They arrive; then each bookmark slides into its card.
      ---------------------------------------------------------- */
 
